@@ -1,0 +1,25 @@
+{
+    "events": [
+        {
+            "title": "Evento 1",
+            "responsible": "Valeria Granada",
+            "description": "Este es un evento 1",
+            "date": "13/03/2020",
+            "hour": "6:30"
+        },
+        {
+            "title": "Evento 2",
+            "responsible": "Valeria Rodas",
+            "description": "Este es un evento 2",
+            "date": "14/03/2020",
+            "hour": "6:40"
+        },
+        {
+            "title": "Evento 3",
+            "responsible": "Valeria Granada Rodas",
+            "description": "Este es un evento 3",
+            "date": "15/03/2020",
+            "hour": "6:50"
+        }
+    ]
+}
