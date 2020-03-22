@@ -3,36 +3,74 @@ import "./styles/Events.css";
 import EventForm from "../components/EventForm";
 import * as firebase from "firebase";
 import { DB_CONFING } from "../config/config";
+import Event from "../components/Event";
+import Loader from "../components/Loader";
 
 class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      events: []
+      events: [],
+      form: {
+        title: "",
+        responsible: "",
+        description: "",
+        date: "",
+        hour: "",
+        place: ""
+      },
+      loading: false,
+      error: null
     };
     this.app = firebase.initializeApp(DB_CONFING);
     this.db = this.app
       .database()
       .ref()
       .child("events");
-    this.handleAddEvent = this.handleAddEvent.bind(this);
+
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.removeEvent = this.removeEvent.bind(this);
   }
 
-  componentDidMount() {
-    const { events } = this.state;
-    this.db.on("child_added", snap => {
-      events.push({
-        eventId: snap.key,
-        title: snap.val().title,
-        description: snap.val().description,
-        responsible: snap.val().responsible,
-        date: snap.val().date,
-        hour: snap.val().hour,
-        place: snap.val().place
-      });
-      this.setState({ events });
+  fetchData = () => {
+    this.setState({
+      loading: true,
+      error: null
     });
+
+    try {
+       
+        const { events } = this.state;
+
+        this.db.on("child_added", snap => {
+        events.push({
+          eventId: snap.key,
+          title: snap.val().title,
+          description: snap.val().description,
+          responsible: snap.val().responsible,
+          date: snap.val().date,
+          hour: snap.val().hour,
+          place: snap.val().place
+        });
+
+        this.setState({
+          events
+        });
+      });
+
+      this.setState({
+          loading: false
+      });
+    } catch (error) {
+      this.setState({
+        loading: false,
+        error: error
+      });
+    }
+  };
+
+  componentDidMount() {
+    this.fetchData();
   }
 
   componentWillUnmount() {
@@ -40,8 +78,9 @@ class Events extends Component {
     this.setState({ events });
   }
 
-  removeEvent(event, index) {
-    this.db.child(event).remove();
+  async removeEvent(event, index) {
+    await this.db.child(event).remove();
+
     this.setState({
       events: this.state.events.filter((e, i) => {
         return i !== index;
@@ -49,7 +88,17 @@ class Events extends Component {
     });
   }
 
-  handleAddEvent(event) {
+  handleChange = e => {
+    this.setState({
+      form: {
+        ...this.state.form,
+        [e.target.name]: e.target.value
+      }
+    });
+  };
+
+  handleSubmit(event) {
+    event.preventDefault();
     this.db.push().set({
       title: event.title,
       description: event.description,
@@ -58,36 +107,30 @@ class Events extends Component {
       hour: event.hour,
       place: event.place
     });
+
+    this.setState({
+      form: []
+    });
   }
 
   render() {
+    if (this.state.loading) {
+      return <Loader />;
+    }
+
+    if (this.state.error) {
+      return (
+        <h3 className="text-danger">{`Error: ${this.state.error.message}`}</h3>
+      );
+    }
+
     const events = this.state.events.map((event, i) => {
       return (
-        <div key={event.eventId} className="col-md-4 col-sm-6 col-xs-12">
-          <article className="material-card Red">
-            <a href="">
-              <h2>
-                <span>{event.title}</span>
-                <strong>
-                  <i className="fa fa-fw fa-magic"></i>
-                  {event.responsible}
-                </strong>
-              </h2>
-            </a>
-            <div className="mc-content card">
-              <a
-                className="mc-btn-action
-                    danger btn-danger"
-                onClick={this.removeEvent.bind(this, event.eventId, i)}
-              >
-                <i className="fa fa-close"></i>
-              </a>
-              <div className="mc-description">
-                <h4>{event.description}</h4>
-              </div>
-            </div>
-          </article>
-        </div>
+        <Event
+          event={event}
+          key={event.eventId}
+          removeEvent={() => this.removeEvent(event.eventId, i)}
+        />
       );
     });
 
@@ -104,7 +147,12 @@ class Events extends Component {
         <div className="container">
           <div className="row mt-4">
             <div className="col-md-3 text-center">
-              <EventForm onAddEvent={this.handleAddEvent}></EventForm>
+              <EventForm
+                onAddEvent={this.handleAddEvent}
+                onChange={this.handleChange}
+                formValues={this.state.form}
+                onSubmit={this.handleSubmit(this.state.form)}
+              ></EventForm>
             </div>
             <div className="col-md-9">
               <div className="row">{events}</div>
