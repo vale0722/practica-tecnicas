@@ -17,7 +17,8 @@ class Events extends Component {
         description: "",
         date: "",
         hour: "",
-        place: ""
+        place: "",
+        guest: []
       },
       loading: false,
       error: null
@@ -32,17 +33,19 @@ class Events extends Component {
     this.removeEvent = this.removeEvent.bind(this);
   }
 
-  fetchData = () => {
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = async () => {
     this.setState({
       loading: true,
       error: null
     });
 
     try {
-       
-        const { events } = this.state;
-
-        this.db.on("child_added", snap => {
+      const { events } = this.state;
+      await this.db.on("child_added", snap => {
         events.push({
           eventId: snap.key,
           title: snap.val().title,
@@ -50,7 +53,7 @@ class Events extends Component {
           responsible: snap.val().responsible,
           date: snap.val().date,
           hour: snap.val().hour,
-          place: snap.val().place
+          place: snap.val().place,
         });
 
         this.setState({
@@ -59,7 +62,7 @@ class Events extends Component {
       });
 
       this.setState({
-          loading: false
+        loading: false
       });
     } catch (error) {
       this.setState({
@@ -68,10 +71,6 @@ class Events extends Component {
       });
     }
   };
-
-  componentDidMount() {
-    this.fetchData();
-  }
 
   componentWillUnmount() {
     const { events } = this.state;
@@ -97,19 +96,27 @@ class Events extends Component {
     });
   };
 
-  handleSubmit(event) {
-    event.preventDefault();
+  handleSubmit(event, e) {
+    e.preventDefault();
     this.db.push().set({
       title: event.title,
       description: event.description,
       responsible: event.responsible,
       date: event.date,
       hour: event.hour,
-      place: event.place
+      place: event.place,
     });
 
     this.setState({
-      form: []
+      form: {
+        title: "",
+        responsible: "",
+        description: "",
+        date: "",
+        hour: "",
+        place: "",
+        guest: []
+      }
     });
   }
 
@@ -151,7 +158,7 @@ class Events extends Component {
                 onAddEvent={this.handleAddEvent}
                 onChange={this.handleChange}
                 formValues={this.state.form}
-                onSubmit={this.handleSubmit(this.state.form)}
+                onSubmit={e => this.handleSubmit(this.state.form, e)}
               ></EventForm>
             </div>
             <div className="col-md-9">
