@@ -7,17 +7,16 @@ class NavBar extends Component {
   render() {
     return (
       <React.Fragment>
-        <ul>
-          <li>
-            <a href="/">Home</a>
-          </li>
-          <li>
-            <a href="/events">Events</a>
-          </li>
-          <li>
-            <a href="/info">Info</a>
-          </li>
-        </ul>
+      <nav className="navbar navbar-light bg-light">
+        <a href="/" className=" nav-link navbar-brand">
+            Inicio
+        </a>
+        <a class="nav-link navbar-brand" href="/events">Eventos</a>
+        <a class="nav-link navbar-brand" href=""></a>
+        <a class="nav-link navbar-brand" href=""></a>
+        <a class="nav-link navbar-brand" href=""></a>
+        <a class="nav-link navbar-brand" href=""></a>
+      </nav>
       </React.Fragment>
     );
   }

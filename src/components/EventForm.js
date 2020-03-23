@@ -1,76 +1,92 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import Button from '@material-ui/core/Button';
+import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 
 class eventForm extends Component {
- 
+
   render() {
     return (
       <div className="card">
-        <h3>Crear Evento:</h3>
-        <form onSubmit={this.props.onSubmit} className="card-body">
-          <div className="form-group">
-            <input
+        <div className="card-header">
+        <h3 className="modal-title">Crear Evento:</h3>
+        </div>
+        <ValidatorForm onSubmit={this.props.onSubmit} className="card-body">
+        <div className="form-group">
+            <TextValidator
               type="text"
               name="title"
-              className="form-control"
+              validators={['required']}
+              errorMessages={['Este campo es requerido']}
               value={this.props.formValues.title}
+              className="ValidatorForm-control"
               onChange={this.props.onChange}
               placeholder="Titulo"
-              />
+            />
           </div>
           <div className="form-group">
-            <input
+            <TextValidator
               type="text"
               name="responsible"
-              className="form-control"
+              validators={['required']}
+              errorMessages={['Este campo es requerido']}
               value={this.props.formValues.responsible}
+              className="ValidatorForm-control"
               onChange={this.props.onChange}
               placeholder="Responsable"
-              />
+            />
           </div>
           <div className="form-group">
-            <input
+            <TextValidator
               type="text"
               name="description"
-              className="form-control"
+              validators={['required']}
+              errorMessages={['Este campo es requerido']}
               value={this.props.formValues.description}
+              className="ValidatorForm-control"
               onChange={this.props.onChange}
               placeholder="Descripción"
-              />
+            />
           </div>
           <div className="form-group">
-            <input
+            <TextValidator
               type="date"
               name="date"
-              className="form-control"
+              validators={['required']}
+              errorMessages={['Este campo es requerido']}
               value={this.props.formValues.date}
+              className="ValidatorForm-control"
               onChange={this.props.onChange}
               placeholder="Fecha"
-              />
+            />
           </div>
           <div className="form-group">
-            <input
+            <TextValidator
               type="hour"
               name="hour"
-              className="form-control"
+              validators={['required']}
+              errorMessages={['Este campo es requerido']}
               value={this.props.formValues.hour}
+              className="ValidatorForm-control"
               onChange={this.props.onChange}
-              placeholder="Hora"
-              />
+              placeholder="00:00 pm/am"
+            />
           </div>
           <div className="form-group">
-            <input
+            <TextValidator
               type="place"
               name="place"
-              className="form-control"
-              value={this.props.formValues.place}
+              validators={['required']}
+              errorMessages={['Este campo es requerido']}
+              className="ValidatorForm-control"
               onChange={this.props.onChange}
+              value={this.props.formValues.place}
               placeholder="Lugar"
-              />
+            />
           </div>
-          <button type="submit" className="btn btn-primary">
+          <Button type="submit" className="btn btn-primary">
             Guardar
-          </button>
-        </form>
+          </Button>
+        </ValidatorForm>
       </div>
     )
   }

@@ -18,12 +18,16 @@ class Events extends Component {
         date: "",
         hour: "",
         place: "",
-        guest: []
+        guests: []
       },
       loading: false,
       error: null
     };
-    this.app = firebase.initializeApp(DB_CONFING);
+    if (!firebase.apps.length) {
+      this.app = firebase.initializeApp(DB_CONFING);   
+    }else{
+      this.app = firebase.app();
+    }
     this.db = this.app
       .database()
       .ref()
@@ -115,7 +119,7 @@ class Events extends Component {
         date: "",
         hour: "",
         place: "",
-        guest: []
+        guests: []
       }
     });
   }

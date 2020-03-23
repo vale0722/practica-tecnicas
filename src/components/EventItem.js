@@ -7,10 +7,10 @@ class EventItem extends Component {
     const { event } = this.props;
 
     return (
-      <div className="card col-md-4 col-sm-6 col-xs-12">
+      <div className="card text-left mb-3 border-info">
         <div className="card-body">
           <h2 className="card-title">
-          <span class="badge badge-secondary">{event.title}</span>
+          <span className="badge badge-secondary">{event.title}</span>
           </h2>
           <p className="card-text"><strong>Responsable: </strong>{event.responsible}</p>
           <p className="card-text"><strong>Descripcion: </strong>{event.description}</p>
